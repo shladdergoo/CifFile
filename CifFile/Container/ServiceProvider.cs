@@ -43,5 +43,15 @@ namespace CifFile
 
             return _serviceProvider.GetService<T>();
         }
+
+        public static ILogger GetLogger<T>()
+        {
+            if (_serviceProvider == null)
+            {
+                Build();
+            }
+
+            return _serviceProvider.GetRequiredService<ILogger<T>>();
+        }
     }
 }
