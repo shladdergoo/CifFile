@@ -30,7 +30,8 @@ namespace CifFile.Lib
             _reader = new StreamReader(inputStream);
         }
 
-        public int ProcessBatch(IEnumerable<IEnumerable<string>> buffer, int batchSize, ScheduleType scheduleType)
+        public int ProcessBatch(IEnumerable<IEnumerable<string>> buffer, int batchSize, ScheduleType scheduleType,
+            BatchArgs batchArgs)
         {
             if (_reader == null) throw new InvalidOperationException("CifParser not initialized");
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));

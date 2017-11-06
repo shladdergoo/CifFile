@@ -6,6 +6,7 @@ namespace CifFile.Lib
     public interface ICifProcessor
     {
         void Initialize(Stream inputStream);
-        int ProcessBatch(IEnumerable<IEnumerable<string>> buffer, int batchSize, ScheduleType scheduleType);
+        int ProcessBatch(IEnumerable<IEnumerable<string>> buffer, int batchSize, ScheduleType scheduleType,
+            BatchArgs batchArgs);
     }
 }

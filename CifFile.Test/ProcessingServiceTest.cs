@@ -31,12 +31,12 @@ namespace CifFile.Test
             returnStack.Push(0);
             returnStack.Push(RecordCount);
 
-            _cifProcessor.ProcessBatch(default(IEnumerable<IEnumerable<string>>), default(int), default(ScheduleType))
-                .ReturnsForAnyArgs(x => { return returnStack.Pop(); });
+            _cifProcessor.ProcessBatch(default(IEnumerable<IEnumerable<string>>), default(int), default(ScheduleType)
+                , default(BatchArgs)).ReturnsForAnyArgs(x => { return returnStack.Pop(); });
 
             ProcessingService sut = new ProcessingService(_cifProcessor, _outputWriter, _fileSystem);
 
-            long returnVal = sut.Process("foo", "bar", 10, "bundy");
+            long returnVal = sut.Process("foo", "bar", 10, "bundy", null);
 
             Assert.Equal(RecordCount, returnVal);
         }
@@ -50,12 +50,12 @@ namespace CifFile.Test
             returnStack.Push(0);
             returnStack.Push(RecordCount);
 
-            _cifProcessor.ProcessBatch(default(IEnumerable<IEnumerable<string>>), default(int), default(ScheduleType))
-                .ReturnsForAnyArgs(x => { return returnStack.Pop(); });
+            _cifProcessor.ProcessBatch(default(IEnumerable<IEnumerable<string>>), default(int), default(ScheduleType),
+                default(BatchArgs)).ReturnsForAnyArgs(x => { return returnStack.Pop(); });
 
             ProcessingService sut = new ProcessingService(_cifProcessor, _outputWriter, _fileSystem);
 
-            sut.Process("foo", "bar", 10, "bundy");
+            sut.Process("foo", "bar", 10, "bundy", null);
 
             _outputWriter.ReceivedWithAnyArgs(1)
                 .Write(default(IEnumerable<IEnumerable<string>>));
@@ -66,12 +66,12 @@ namespace CifFile.Test
         {
             List<List<string>> buffer = Arg.Any<List<List<string>>>();
 
-            _cifProcessor.ProcessBatch(default(IEnumerable<IEnumerable<string>>), default(int), default(ScheduleType))
-                .ReturnsForAnyArgs(0);
+            _cifProcessor.ProcessBatch(default(IEnumerable<IEnumerable<string>>), default(int), default(ScheduleType)
+                , default(BatchArgs)).ReturnsForAnyArgs(0);
 
             ProcessingService sut = new ProcessingService(_cifProcessor, _outputWriter, _fileSystem);
 
-            long returnVal = sut.Process("foo", "bar", 10, "bundy");
+            long returnVal = sut.Process("foo", "bar", 10, "bundy", null);
 
             Assert.Equal(0, returnVal);
         }
@@ -81,12 +81,12 @@ namespace CifFile.Test
         {
             List<List<string>> buffer = Arg.Any<List<List<string>>>();
 
-            _cifProcessor.ProcessBatch(default(IEnumerable<IEnumerable<string>>), default(int), default(ScheduleType))
-                .ReturnsForAnyArgs(0);
+            _cifProcessor.ProcessBatch(default(IEnumerable<IEnumerable<string>>), default(int), default(ScheduleType),
+                default(BatchArgs)).ReturnsForAnyArgs(0);
 
             ProcessingService sut = new ProcessingService(_cifProcessor, _outputWriter, _fileSystem);
 
-            sut.Process("foo", "bar", 10, "bundy");
+            sut.Process("foo", "bar", 10, "bundy", null);
 
             _outputWriter.DidNotReceiveWithAnyArgs()
                 .Write(default(IEnumerable<IEnumerable<string>>));

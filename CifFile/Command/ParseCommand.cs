@@ -35,7 +35,7 @@ namespace CifFile
 
                     DateTime startTime = DateTime.UtcNow;
                     long recordCount = processingService.Process(filename.Value,
-                        outputDirectory.Value, 1000, GetScheduleTypeValue(scheduleType));
+                        outputDirectory.Value, 1000, GetScheduleTypeValue(scheduleType), null);
                     
                     WriteComplete(GetRuntime(startTime), recordCount);
                 }

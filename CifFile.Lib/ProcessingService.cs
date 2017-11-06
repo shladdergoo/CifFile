@@ -30,7 +30,8 @@ namespace CifFile.Lib
             if (BatchProcessed != null) BatchProcessed(this, e);
         }
 
-        public long Process(string filename, string outputLocation, int batchSize, string scheduleType)
+        public long Process(string filename, string outputLocation, int batchSize, string scheduleType,
+            BatchArgs args)
         {
             List<List<string>> buffer = new List<List<string>>();
             long batchCount = 0;
@@ -41,7 +42,7 @@ namespace CifFile.Lib
             _cifProcessor.Initialize(_fileSystem.FileOpen(filename, FileMode.Open));
 
             int bufferCount = 0;
-            while ((bufferCount = _cifProcessor.ProcessBatch(buffer, batchSize, scheduleTypeEnum)) > 0)
+            while ((bufferCount = _cifProcessor.ProcessBatch(buffer, batchSize, scheduleTypeEnum, args)) > 0)
             {
                 batchCount++;
                 recordCount += bufferCount;
