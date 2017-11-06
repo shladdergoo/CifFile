@@ -6,5 +6,7 @@ namespace CifFile.Lib
     {
         bool Match(IList<ScheduleCriteria> scheduleCriteria, string trainUid);
         bool Match(IList<ScheduleCriteria> scheduleCriteria, string trainUid, string stpIndicator);
+        bool Match(IList<ScheduleCriteria> scheduleCriteria, string trainUid, string stpIndicator,
+            string locationOrigin, string locationTerminates);
     }
 }

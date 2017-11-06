@@ -4,12 +4,16 @@ namespace CifFile.Lib
     {
         public string TrainUID { get; }
         public string STPIndicator { get; }
-        
-        public ScheduleCriteria(string TrainUID, string STPIndicator)
-        {
-            this.STPIndicator = STPIndicator;
-            this.TrainUID = TrainUID;
+        public string LocationOrigin { get; }
+        public string LocationTerminates { get; }
 
+        public ScheduleCriteria(string trainUID, string stpIndicator, string locationOrigin,
+            string locationTerminates)
+        {
+            LocationTerminates = locationTerminates;
+            LocationOrigin = locationOrigin;
+            STPIndicator = stpIndicator;
+            TrainUID = trainUID;
         }
     }
 }
