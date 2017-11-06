@@ -12,7 +12,7 @@ namespace CifFile.Lib
         private readonly IScheduleMatcher _scheduleMatcher;
 
         private StreamReader _reader;
-        private IList<string> _buffer;
+        private List<string> _buffer;
         private IList<ScheduleCriteria> _scheduleCriteria;
 
         public CifEditor(IInputStreamFactory inputStreamFactory, ICifRecordDefFactory recordDefFactory,
@@ -93,10 +93,12 @@ namespace CifFile.Lib
         {
             string trainUid = lineValues[2];
             string stpIndicator = lineValues[25];
+            string lo = null;
+            string lt = null;
 
             if (!_scheduleMatcher.Match(_scheduleCriteria, trainUid, stpIndicator)) return;
 
-            _buffer.Add(line);
+            List<string> scheduleBuffer = new List<string> { line };
 
             string recordId;
             string scheduleLine;
@@ -106,9 +108,16 @@ namespace CifFile.Lib
                 IList<string> scheduleLineValues = ParseLine(scheduleLine, recordDefs);
                 recordId = scheduleLineValues[0];
 
-                if (recordId != "BX") _buffer.Add(scheduleLine);
+                if (recordId != "BX") scheduleBuffer.Add(scheduleLine);
+                if (recordId == "LO") lo = recordId = scheduleLineValues[1];
+                if (recordId == "LT") lt = recordId = scheduleLineValues[1];
 
             } while (scheduleLine != null && recordId != "LT");
+
+            if (!_scheduleMatcher.Match(_scheduleCriteria, trainUid, stpIndicator, lo, lt))
+            {
+                _buffer.AddRange(scheduleBuffer);
+            }
         }
 
         private void ProcessAssociation(string line, IList<string> lineValues)
