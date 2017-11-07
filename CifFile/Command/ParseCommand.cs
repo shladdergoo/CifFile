@@ -6,7 +6,7 @@ using CifFile.Lib;
 
 namespace CifFile
 {
-    class ParseCommand
+    static class ParseCommand
     {
         const string HelpOptionTemplate = "-? | -h | --h | --help";
 
@@ -27,17 +27,11 @@ namespace CifFile
 
             command.OnExecute(() =>
             {
+                ServiceProvider.Build(CifProcessorType.Parse);
+
                 if (filename.Value != null && outputDirectory.Value != null)
                 {
-                    IProcessingService processingService = ServiceProvider.GetService<IProcessingService>();
-
-                    processingService.BatchProcessed += new EventHandler<BatchProcessedEventArgs>(BatchProcessed);
-
-                    DateTime startTime = DateTime.UtcNow;
-                    long recordCount = processingService.Process(filename.Value,
-                        outputDirectory.Value, 1000, GetScheduleTypeValue(scheduleType), null);
-                    
-                    WriteComplete(GetRuntime(startTime), recordCount);
+                    Execute(filename.Value, outputDirectory.Value, scheduleType);
                 }
                 else
                 {
@@ -45,6 +39,20 @@ namespace CifFile
                 }
                 return 0;
             });
+        }
+
+        private static void Execute(string filename, string outputDirectory,
+            CommandOption scheduleType)
+        {
+            IProcessingService processingService = ServiceProvider.GetService<IProcessingService>();
+
+            processingService.BatchProcessed += new EventHandler<BatchProcessedEventArgs>(BatchProcessed);
+
+            DateTime startTime = DateTime.UtcNow;
+            long recordCount = processingService.Process(filename, outputDirectory, 
+                1000, GetScheduleTypeValue(scheduleType), null);
+
+            WriteComplete(GetRuntime(startTime), recordCount);
         }
 
         private static string GetScheduleTypeValue(CommandOption scheduleType)

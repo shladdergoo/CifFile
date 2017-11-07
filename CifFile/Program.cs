@@ -10,8 +10,6 @@ namespace CifFile
 
         static void Main(string[] args)
         {
-            ServiceProvider.Build();
-
             CommandLineApplication commandLineApplication =
                new CommandLineApplication(false);
 

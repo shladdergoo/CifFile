@@ -13,16 +13,31 @@ namespace CifFile
 
         public static void Build()
         {
-            _serviceProvider = new ServiceCollection()
+            Build(CifProcessorType.Parse);
+        }
+
+        public static void Build(CifProcessorType processorType)
+        {
+            IServiceCollection serviceCollection = new ServiceCollection()
                 .AddTransient<IScheduleMatcher, ScheduleMatcher>()
                 .AddTransient<IInputStreamFactory, InputStreamFactory>()
                 .AddTransient<IFileSystem, FileSystem>()
                 .AddTransient<IOutputWriter, CsvFileOutputWriter>()
-                .AddTransient<ICifRecordDefFactory, CifRecordDefFactory>()
-                .AddTransient<ICifProcessor, CifParser>()
-                .AddTransient<IProcessingService, ProcessingService>()
-                .AddTransient<ICifProcessor, CifParser>()
-                .BuildServiceProvider();
+                .AddTransient<ICifRecordDefFactory, CifRecordDefFactory>();
+
+            if (processorType == CifProcessorType.Edit)
+            {
+                serviceCollection.AddTransient<ICifProcessor, CifEditor>();
+            }
+            else
+            {
+                serviceCollection.AddTransient<ICifProcessor, CifEditor>();
+            }
+
+            serviceCollection.AddTransient<IProcessingService, ProcessingService>()
+                .AddTransient<ICifProcessor, CifParser>();
+
+            _serviceProvider = serviceCollection.BuildServiceProvider();
         }
 
         public static T GetService<T>()
