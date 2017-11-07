@@ -14,14 +14,14 @@ namespace CifFile
         public static void Build()
         {
             _serviceProvider = new ServiceCollection()
-                .AddSingleton<IScheduleMatcher, ScheduleMatcher>()
-                .AddSingleton<IInputStreamFactory, InputStreamFactory>()
-                .AddSingleton<IFileSystem, FileSystem>()
-                .AddSingleton<IOutputWriter, CsvFileOutputWriter>()
-                .AddSingleton<ICifRecordDefFactory, CifRecordDefFactory>()
-                .AddSingleton<ICifProcessor, CifParser>()
-                .AddSingleton<ICifProcessor, CifEditor>()
-                .AddSingleton<IProcessingService, ProcessingService>()
+                .AddTransient<IScheduleMatcher, ScheduleMatcher>()
+                .AddTransient<IInputStreamFactory, InputStreamFactory>()
+                .AddTransient<IFileSystem, FileSystem>()
+                .AddTransient<IOutputWriter, CsvFileOutputWriter>()
+                .AddTransient<ICifRecordDefFactory, CifRecordDefFactory>()
+                .AddTransient<ICifProcessor, CifParser>()
+                .AddTransient<IProcessingService, ProcessingService>()
+                .AddTransient<ICifProcessor, CifParser>()
                 .BuildServiceProvider();
         }
 
