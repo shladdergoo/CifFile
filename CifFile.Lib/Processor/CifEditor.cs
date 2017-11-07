@@ -37,6 +37,7 @@ namespace CifFile.Lib
         public int ProcessBatch(IEnumerable<IEnumerable<string>> buffer, int batchSize, ScheduleType scheduleType,
             BatchArgs batchArgs)
         {
+            if (_reader == null) throw new InvalidOperationException("CifEditor not initialized");
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             if (batchArgs == null) throw new ArgumentNullException(nameof(batchArgs));
 
@@ -56,10 +57,13 @@ namespace CifFile.Lib
                 ProcessLine(line, _reader, recordDefs);
                 recordCount++;
 
-            } while (line != null);
+            } while (line != null && recordCount < batchSize);
 
             ((List<List<string>>)buffer).Clear();
-            ((List<List<string>>)buffer).AddRange(new List<List<string>>() { _buffer.ToList() });
+            if (_buffer.Any())
+            {
+                ((List<List<string>>)buffer).AddRange(new List<List<string>>() { _buffer.ToList() });
+            }
             return recordCount;
         }
 

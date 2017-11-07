@@ -9,21 +9,33 @@ using CifFile.Lib;
 
 namespace CifFile.Test
 {
-    public class CifParserTest
+    public class CifEditorTest
     {
         private readonly IInputStreamFactory _inputStreamFactory;
         private readonly ICifRecordDefFactory _recordDefFactory;
+        private readonly IScheduleMatcher _scheduleMatcher;
 
-        public CifParserTest()
+        public CifEditorTest()
         {
             _inputStreamFactory = Substitute.For<IInputStreamFactory>();
             _recordDefFactory = Substitute.For<ICifRecordDefFactory>();
+            _scheduleMatcher = Substitute.For<IScheduleMatcher>();
+        }
+
+        [Fact]
+        public void Initialize_StreamNull_ThrowsException()
+        {
+            ICifProcessor sut = new CifEditor(_inputStreamFactory,
+                _recordDefFactory, _scheduleMatcher);
+
+            Assert.Throws<ArgumentNullException>(() => { sut.Initialize(null); });
         }
 
         [Fact]
         public void ProcessBatch_NotInitialised_ThrowsException()
         {
-            ICifProcessor sut = new CifParser(_inputStreamFactory, _recordDefFactory);
+            ICifProcessor sut = new CifEditor(_inputStreamFactory,
+                _recordDefFactory, _scheduleMatcher);
 
             Assert.Throws<InvalidOperationException>(() =>
             {
@@ -34,12 +46,14 @@ namespace CifFile.Test
         [Fact]
         public void ProcessBatch_EOFReached_ReturnsLastBatch()
         {
-            ICifProcessor sut = new CifParser(_inputStreamFactory, _recordDefFactory);
+            ICifProcessor sut = new CifEditor(_inputStreamFactory,
+                _recordDefFactory, _scheduleMatcher);
 
             sut.Initialize(new MemoryStream());
             List<List<string>> buffer = new List<List<string>>();
 
-            int result = sut.ProcessBatch(buffer, 999, ScheduleType.All, null);
+            int result = sut.ProcessBatch(buffer, 999, ScheduleType.All, 
+                new BatchArgs(new List<ScheduleCriteria>()));
 
             Assert.Equal(0, result);
             Assert.Equal(0, buffer.Count);
