@@ -46,6 +46,13 @@ namespace CifFile.Lib
             IEnumerable<CifRecordBase> recordDefs = _recordDefFactory.GetRecordDefs(scheduleType);
 
             _buffer = new List<string>();
+
+            return DoProcessBatch(buffer, batchSize, recordDefs);
+        }
+
+        private int DoProcessBatch(IEnumerable<IEnumerable<string>> buffer, int batchSize, 
+            IEnumerable<CifRecordBase> recordDefs)
+        {
             string line = null;
             int recordCount = 0;
 
@@ -64,6 +71,7 @@ namespace CifFile.Lib
             {
                 ((List<List<string>>)buffer).AddRange(new List<List<string>>() { _buffer.ToList() });
             }
+
             return recordCount;
         }
 
