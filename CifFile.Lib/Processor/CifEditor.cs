@@ -50,7 +50,7 @@ namespace CifFile.Lib
             return DoProcessBatch(buffer, batchSize, recordDefs);
         }
 
-        private int DoProcessBatch(IEnumerable<IEnumerable<string>> buffer, int batchSize, 
+        private int DoProcessBatch(IEnumerable<IEnumerable<string>> buffer, int batchSize,
             IEnumerable<CifRecordBase> recordDefs)
         {
             string line = null;
@@ -117,6 +117,8 @@ namespace CifFile.Lib
             do
             {
                 scheduleLine = _reader.ReadLine();
+                if (scheduleLine == null) { break; }
+
                 IList<string> scheduleLineValues = ParseLine(scheduleLine, recordDefs);
                 recordId = scheduleLineValues[0];
 
@@ -126,7 +128,7 @@ namespace CifFile.Lib
 
             } while (scheduleLine != null && recordId != "LT");
 
-            if (!_scheduleMatcher.Match(_scheduleCriteria, trainUid, stpIndicator, lo, lt))
+            if (_scheduleMatcher.Match(_scheduleCriteria, trainUid, stpIndicator, lo, lt))
             {
                 _buffer.AddRange(scheduleBuffer);
             }
