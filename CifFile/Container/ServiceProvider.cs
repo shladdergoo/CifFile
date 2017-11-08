@@ -22,16 +22,17 @@ namespace CifFile
                 .AddTransient<IScheduleMatcher, ScheduleMatcher>()
                 .AddTransient<IInputStreamFactory, InputStreamFactory>()
                 .AddTransient<IFileSystem, FileSystem>()
-                .AddTransient<IOutputWriter, CsvFileOutputWriter>()
                 .AddTransient<ICifRecordDefFactory, CifRecordDefFactory>();
 
             if (processorType == CifProcessorType.Edit)
             {
-                serviceCollection.AddTransient<ICifProcessor, CifEditor>();
+                serviceCollection.AddTransient<IOutputWriter, CifFileOutputWriter>()
+                    .AddTransient<ICifProcessor, CifEditor>();
             }
             else
             {
-                serviceCollection.AddTransient<ICifProcessor, CifParser>();
+                serviceCollection.AddTransient<IOutputWriter, CsvFileOutputWriter>()
+                    .AddTransient<ICifProcessor, CifParser>();
             }
 
             serviceCollection.AddTransient<IProcessingService, ProcessingService>();
