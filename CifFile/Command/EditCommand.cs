@@ -1,6 +1,7 @@
 using Microsoft.Extensions.CommandLineUtils;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 using CifFile.Lib;
@@ -58,11 +59,27 @@ namespace CifFile
 
         private static BatchArgs GetBatchArgs(CommandOption criteriaFile)
         {
-            if (!criteriaFile.HasValue()) { return null; }
+            if (!criteriaFile.HasValue()) { return new BatchArgs(null); }
 
-            string criteriaString = File.OpenText(criteriaFile.Value()).ReadToEnd();
+            StreamReader reader = new StreamReader(File.OpenRead(criteriaFile.Value()));
 
-            return null;
+            IEnumerable<ScheduleCriteria> criteria = ReadCriteriaFile(reader);
+
+            return new BatchArgs(criteria);
+        }
+
+        private static IEnumerable<ScheduleCriteria> ReadCriteriaFile(StreamReader reader)
+        {
+            List<ScheduleCriteria> criteria = new List<ScheduleCriteria>();
+
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                string[] lineValues = line.Split(',');
+                criteria.Add(new ScheduleCriteria(lineValues[0], lineValues[1], lineValues[2], lineValues[3]));
+            }
+
+            return criteria;
         }
 
         private static void BatchProcessed(object sender, BatchProcessedEventArgs e)
