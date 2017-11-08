@@ -43,7 +43,7 @@ namespace CifFile
         {
             if (_serviceProvider == null)
             {
-                Build();
+                throw new InvalidOperationException("Service Provider not built");
             }
 
             return _serviceProvider.GetService<T>();
@@ -53,7 +53,7 @@ namespace CifFile
         {
             if (_serviceProvider == null)
             {
-                Build();
+                throw new InvalidOperationException("Service Provider not built");
             }
 
             return _serviceProvider.GetServices<T>();
