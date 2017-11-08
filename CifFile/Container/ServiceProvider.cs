@@ -31,11 +31,10 @@ namespace CifFile
             }
             else
             {
-                serviceCollection.AddTransient<ICifProcessor, CifEditor>();
+                serviceCollection.AddTransient<ICifProcessor, CifParser>();
             }
 
-            serviceCollection.AddTransient<IProcessingService, ProcessingService>()
-                .AddTransient<ICifProcessor, CifParser>();
+            serviceCollection.AddTransient<IProcessingService, ProcessingService>();
 
             _serviceProvider = serviceCollection.BuildServiceProvider();
         }
