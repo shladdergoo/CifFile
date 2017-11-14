@@ -16,16 +16,13 @@ namespace CifFile.Lib
 
         public CifParser(IInputStreamFactory inputStreamFactory, ICifRecordDefFactory recordDefFactory)
         {
-            if (inputStreamFactory == null) throw new ArgumentNullException(nameof(inputStreamFactory));
-            if (recordDefFactory == null) throw new ArgumentNullException(nameof(recordDefFactory));
-
-            _inputStreamFactory = inputStreamFactory;
-            _recordDefFactory = recordDefFactory;
+            _inputStreamFactory = inputStreamFactory ?? throw new ArgumentNullException(nameof(inputStreamFactory));
+            _recordDefFactory = recordDefFactory ?? throw new ArgumentNullException(nameof(recordDefFactory));
         }
 
         public void Initialize(Stream inputStream)
         {
-            if (inputStream == null) throw new ArgumentNullException(nameof(inputStream));
+            if (inputStream == null) { throw new ArgumentNullException(nameof(inputStream)); }
 
             _reader = new StreamReader(inputStream);
         }
@@ -45,10 +42,10 @@ namespace CifFile.Lib
             do
             {
                 line = _reader.ReadLine();
-                if (line == null) continue;
+                if (line == null) { continue; }
 
                 lineValues = ParseLine(line, recordDefs);
-                if (lineValues.Count > 0) internalBuffer.Add(lineValues);
+                if (lineValues.Count > 0) { internalBuffer.Add(lineValues); }
 
             } while (line != null && internalBuffer.Count < batchSize);
 
@@ -65,9 +62,9 @@ namespace CifFile.Lib
             CifRecordBase lineRecord = recordDefs
                 .FirstOrDefault(r => line.StartsWith(r.RecordIdentifier));
 
-            if (lineRecord == null) return lineValues;
+            if (lineRecord == null) { return lineValues; }
 
-            if (lineRecord.IsParent) _parentId++;
+            if (lineRecord.IsParent) { _parentId++; }
 
             lineValues.Add(_parentId.ToString());
 

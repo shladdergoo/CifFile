@@ -14,16 +14,14 @@ namespace CifFile.Lib
 
         public CifFileOutputWriter(IFileSystem fileSystem)
         {
-            if (fileSystem == null) throw new ArgumentNullException(nameof(fileSystem));
-
-            _fileSystem = fileSystem;
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
         }
 
         public void Open(string filename, ScheduleType scheduleType)
         {
             string outputDir = Path.GetDirectoryName(filename);
 
-            if (!Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
+            if (!Directory.Exists(outputDir)) { Directory.CreateDirectory(outputDir); }
 
             FileStream stream = new FileStream(filename, FileMode.Create, FileAccess.Write);
 
@@ -32,8 +30,8 @@ namespace CifFile.Lib
 
         public void Write(IEnumerable<IEnumerable<string>> buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
-            if (_writer == null) throw new InvalidOperationException("Writer not open.");
+            if (buffer == null) { throw new ArgumentNullException(nameof(buffer)); }
+            if (_writer == null) { throw new InvalidOperationException("Writer not open."); }
 
             foreach (IEnumerable<string> lineStrings in buffer)
             {

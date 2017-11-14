@@ -18,20 +18,14 @@ namespace CifFile.Lib
         public CifEditor(IInputStreamFactory inputStreamFactory, ICifRecordDefFactory recordDefFactory,
             IScheduleMatcher scheduleMatcher)
         {
-            if (inputStreamFactory == null) throw new ArgumentNullException(nameof(inputStreamFactory));
-            if (recordDefFactory == null) throw new ArgumentNullException(nameof(recordDefFactory));
-            if (scheduleMatcher == null) throw new ArgumentNullException(nameof(scheduleMatcher));
-
-            _inputStreamFactory = inputStreamFactory;
-            _recordDefFactory = recordDefFactory;
-            _scheduleMatcher = scheduleMatcher;
+            _inputStreamFactory = inputStreamFactory ?? throw new ArgumentNullException(nameof(inputStreamFactory));
+            _recordDefFactory = recordDefFactory ?? throw new ArgumentNullException(nameof(recordDefFactory));
+            _scheduleMatcher = scheduleMatcher ?? throw new ArgumentNullException(nameof(scheduleMatcher));
         }
 
         public void Initialize(Stream inputStream)
         {
-            if (inputStream == null) throw new ArgumentNullException(nameof(inputStream));
-
-            _reader = new StreamReader(inputStream);
+            _reader = new StreamReader(inputStream) ?? throw new ArgumentNullException(nameof(inputStream));
         }
 
         public int ProcessBatch(IEnumerable<IEnumerable<string>> buffer, int batchSize, ScheduleType scheduleType,
@@ -108,7 +102,7 @@ namespace CifFile.Lib
             string lo = null;
             string lt = null;
 
-            if (!_scheduleMatcher.Match(_scheduleCriteria, trainUid, stpIndicator)) return;
+            if (!_scheduleMatcher.Match(_scheduleCriteria, trainUid, stpIndicator)) { return; }
 
             List<string> scheduleBuffer = new List<string> { line };
 
@@ -122,9 +116,9 @@ namespace CifFile.Lib
                 IList<string> scheduleLineValues = ParseLine(scheduleLine, recordDefs);
                 recordId = scheduleLineValues[0];
 
-                if (recordId != "BX") scheduleBuffer.Add(scheduleLine);
-                if (recordId == "LO") lo = recordId = scheduleLineValues[1];
-                if (recordId == "LT") lt = recordId = scheduleLineValues[1];
+                if (recordId != "BX") { scheduleBuffer.Add(scheduleLine); }
+                if (recordId == "LO") { lo = recordId = scheduleLineValues[1]; }
+                if (recordId == "LT") { lt = recordId = scheduleLineValues[1]; }
 
             } while (scheduleLine != null && recordId != "LT");
 
@@ -153,7 +147,7 @@ namespace CifFile.Lib
             CifRecordBase lineRecord = recordDefs
                 .FirstOrDefault(r => line.StartsWith(r.RecordIdentifier));
 
-            if (lineRecord == null) return lineValues;
+            if (lineRecord == null) { return lineValues; }
 
             lineValues.AddRange(GetFieldValues(line, lineRecord));
 

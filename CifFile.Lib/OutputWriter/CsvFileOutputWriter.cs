@@ -16,17 +16,14 @@ namespace CifFile.Lib
 
         public CsvFileOutputWriter(IFileSystem fileSystem, ICifRecordDefFactory recordDefFactory)
         {
-            if (fileSystem == null) throw new ArgumentNullException(nameof(fileSystem));
-            if (recordDefFactory == null) throw new ArgumentNullException(nameof(recordDefFactory));
-
-            _fileSystem = fileSystem;
-            _recordDefFactory = recordDefFactory;
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            _recordDefFactory = recordDefFactory ?? throw new ArgumentNullException(nameof(recordDefFactory));
         }
 
         public void Open(string outputDir, ScheduleType scheduleType)
         {
-            if (outputDir == null) throw new ArgumentNullException(nameof(outputDir));
-            if (!_fileSystem.DirectoryExists(outputDir)) _fileSystem.CreateDirectory(outputDir);
+            if (outputDir == null) { throw new ArgumentNullException(nameof(outputDir)); }
+            if (!_fileSystem.DirectoryExists(outputDir)) { _fileSystem.CreateDirectory(outputDir); }
 
             IEnumerable<CifRecordBase> recordDefs = _recordDefFactory.GetRecordDefs(scheduleType);
             _writers = new Dictionary<string, RecordWriter>();
@@ -47,8 +44,8 @@ namespace CifFile.Lib
 
         public void Write(IEnumerable<IEnumerable<string>> buffer)
         {
-            if (_writers == null) throw new InvalidOperationException("Writer not open.");
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (_writers == null) { throw new InvalidOperationException("Writer not open."); }
+            if (buffer == null) { throw new ArgumentNullException(nameof(buffer)); }
 
             foreach (IEnumerable<string> lineStrings in buffer)
             {
@@ -69,7 +66,7 @@ namespace CifFile.Lib
             string recordIdentifier = lineStrings.ElementAt(1);
             StreamWriter writer = _writers[recordIdentifier].Writer;
 
-            if (IsFirstRow(recordIdentifier)) WriteHeaders(writer, recordIdentifier);
+            if (IsFirstRow(recordIdentifier)) { WriteHeaders(writer, recordIdentifier); }
 
             StringBuilder builder = new StringBuilder();
 

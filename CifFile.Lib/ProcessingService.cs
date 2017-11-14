@@ -16,23 +16,23 @@ namespace CifFile.Lib
 
         public ProcessingService(ICifProcessor cifProcessor, IOutputWriter outputWriter, IFileSystem fileSystem)
         {
-            if (cifProcessor == null) throw new ArgumentNullException(nameof(cifProcessor));
-            if (outputWriter == null) throw new ArgumentNullException(nameof(outputWriter));
-            if (fileSystem == null) throw new ArgumentNullException(nameof(fileSystem));
-
-            _cifProcessor = cifProcessor;
-            _outputWriter = outputWriter;
-            _fileSystem = fileSystem;
+            _cifProcessor = cifProcessor ?? throw new ArgumentNullException(nameof(cifProcessor));
+            _outputWriter = outputWriter ?? throw new ArgumentNullException(nameof(outputWriter));
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
         }
 
         private void OnBatchProcessed(BatchProcessedEventArgs e)
         {
-            if (BatchProcessed != null) BatchProcessed(this, e);
+            if (BatchProcessed != null) { BatchProcessed(this, e); }
         }
 
         public long Process(string filename, string outputLocation, int batchSize, string scheduleType,
             BatchArgs args)
         {
+            if (filename == null) { throw new ArgumentNullException(filename); }
+            if (outputLocation == null) { throw new ArgumentNullException(outputLocation); }
+            if (scheduleType == null) { throw new ArgumentNullException(scheduleType); }
+
             List<List<string>> buffer = new List<List<string>>();
             long batchCount = 0;
             long recordCount = 0;
